@@ -13,4 +13,6 @@ public class Card
         data = cardData;
         Mana = cardData.Mana;
     }
+    
+    
 }

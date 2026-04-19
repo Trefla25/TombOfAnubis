@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
@@ -14,6 +15,15 @@ public class HandView : MonoBehaviour
     {
         cards.Add(cardView);
         yield return UpdateCardPosition(0.15f);
+    }
+
+    public CardView RemoveCard(Card card)
+    {
+        var cardView = GetCardView(card);
+        if (cardView == null) return null;
+        cards.Remove(cardView);
+        StartCoroutine(UpdateCardPosition(0.15f));
+        return cardView;
     }
 
     public IEnumerator UpdateCardPosition(float duration)
@@ -33,5 +43,10 @@ public class HandView : MonoBehaviour
             cards[i].transform.DORotate(rotation.eulerAngles, duration);
         }
         yield return new WaitForSeconds(duration);
+    }
+    
+    private CardView GetCardView(Card card)
+    {
+        return cards.Where(cardView => cardView.Card == card).FirstOrDefault();
     }
 }

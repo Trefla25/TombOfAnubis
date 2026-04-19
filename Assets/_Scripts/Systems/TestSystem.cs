@@ -1,19 +1,14 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class NewMonoBehaviourScript : MonoBehaviour
 {
-    [SerializeField] private HandView handView;
-    [SerializeField] private CardData cardData;
-    
-    void Update()
+    [SerializeField] private List<CardData> deckData;
+
+    private void Start()
     {
-        if (Keyboard.current.spaceKey.wasPressedThisFrame)
-        {
-            Card card = new(cardData);
-            var cardView = CardViewCreator.Instance.CreateCardView(card, transform.position, Quaternion.identity);
-            StartCoroutine(handView.AddCard(cardView));
-        }
+        CardSystem.Instance.Setup(deckData);
     }
 }
