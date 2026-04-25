@@ -1,3 +1,4 @@
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 
@@ -8,8 +9,11 @@ public class CardView : MonoBehaviour
     [SerializeField] private TMP_Text mana;
     [SerializeField] private SpriteRenderer imageSR;
     [SerializeField] private GameObject wrapper;
-    
+    [SerializeField] private LayerMask dropLayer;
+
     public Card Card { get; private set; }
+    private Vector3 dragStartPos;
+    private Quaternion dragStartRot;
     
     public void Setup(Card card)
     {
@@ -22,14 +26,50 @@ public class CardView : MonoBehaviour
 
     void OnMouseEnter()
     {
-        wrapper.SetActive(false);
-        Vector3 pos = new(transform.position.x, -2, 0);
-        CardViewHoverSystem.Instance.Show(Card, pos);
+        if(!Interactions.Instance.PlayerCanHover()) return;
+        HandView.Instance.OnCardHover(this);
     }
 
     void OnMouseExit()
     {
+        if(!Interactions.Instance.PlayerCanHover()) return;
+        HandView.Instance.OnCardUnhover(this);
+    }
+
+    void OnMouseDown()
+    {
+        if(!Interactions.Instance.PlayerCanInteract()) return;
+        Interactions.Instance.PlayerIsDragging = true;
         CardViewHoverSystem.Instance.Hide();
-        wrapper.SetActive(true);
+        dragStartPos = transform.position;
+        dragStartRot = transform.rotation;
+        transform.rotation = Quaternion.Euler(0, 0, 0);
+        transform.position = MouseUtils.GetMousePositionInWorldSpace(-1);
+        HandView.Instance.OnCardDragStart(this);
+    }
+
+    void OnMouseDrag()
+    {
+        if(!Interactions.Instance.PlayerCanInteract()) return;
+        transform.position = MouseUtils.GetMousePositionInWorldSpace(-1);
+    }
+
+    void OnMouseUp()
+    {
+        if(!Interactions.Instance.PlayerCanInteract()) return;
+        HandView.Instance.OnCardDragEnd(this);
+        if(ManaSystem.Instance.HasEnoughMana(Card.Mana) &&
+        Physics.Raycast(transform.position, Vector3.forward, out RaycastHit hit, 10f, dropLayer))
+        {
+            PlayCardGA playCardGA = new(Card);
+            ActionSystem.Instance.Perform(playCardGA);
+        }
+        else
+        {
+            transform.position = dragStartPos;
+            transform.rotation = dragStartRot;
+        }
+
+        Interactions.Instance.PlayerIsDragging = false;
     }
 }

@@ -1,0 +1,36 @@
+using DG.Tweening;
+using TMPro;
+using Unity.VisualScripting;
+using UnityEngine;
+
+public class FightingView : MonoBehaviour
+{
+    [SerializeField] private TMP_Text healthText;
+    [SerializeField] private SpriteRenderer spriteRenderer;
+    public int MaxHealth { get; private set; }
+
+    public int CurrentHealth { get; private set; }
+
+    protected void SetUpBase(int health, Sprite image)
+    {
+        MaxHealth = CurrentHealth = health;
+        spriteRenderer.sprite = image;
+        UpdateHealthText();
+    }
+
+    private void UpdateHealthText()
+    {
+        healthText.text = CurrentHealth + "/" + MaxHealth;
+    }
+
+    public void Damage(int damageAmount)
+    {
+        CurrentHealth -= damageAmount;
+        if(CurrentHealth < 0)
+        {
+            CurrentHealth = 0;
+        }
+        transform.DOShakePosition(0.2f, 0.5f);
+        UpdateHealthText();
+    }
+}

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34847ed8ea114bf4b8c57544a7f31c7a, type: 3}
+  m_Name: FirstEnemy_Attack
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyData
+  <Image>k__BackingField: {fileID: 21300000, guid: f091f5c91f5bf1846b4dcad3fe4cc660, type: 3}
+  <Health>k__BackingField: 15
+  Moveset:
+  - Type: 0
+    Damage: 4
+    MoveImage: {fileID: 21300000, guid: d31dc169816e8fd44be144e6dc4a9e26, type: 3}
+  - Type: 1
+    Damage: 0
+    MoveImage: {fileID: 21300000, guid: 6957d0e9e59addf438d0f5d67d81eab4, type: 3}

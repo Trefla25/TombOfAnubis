@@ -16,9 +16,9 @@ public class CardViewHoverSystem : Singleton<CardViewHoverSystem>
 
     public void Show(Card card, Vector3 position)
     {
+        cardViewHover.gameObject.SetActive(true);
         cardViewHover.Setup(card);
         cardViewHover.transform.position = position;
-        cardViewHover.gameObject.SetActive(true);
 
         cardViewHover.transform.DOKill();
         cardViewHover.transform.DOScale(hoverScale, animDuration).SetEase(Ease.OutBack);

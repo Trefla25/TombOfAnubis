@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
@@ -8,6 +9,7 @@ public class CardSystem : Singleton<CardSystem>
     [SerializeField] private HandView handView;
     [SerializeField] private Transform drawPilePoint;
     [SerializeField] private Transform discardPilePoint;
+    [SerializeField] private Transform playedCardPoint;
     private readonly List<Card> drawPile = new();
     private readonly List<Card> discardPile = new();
     private readonly List<Card> hand = new();
@@ -16,6 +18,8 @@ public class CardSystem : Singleton<CardSystem>
     {
         ActionSystem.AttachPerformer<DrawCardsGA>(DrawCardsPerformer);
         ActionSystem.AttachPerformer<DiscardAllCardsGA>(DiscardAllCardsPerformer);
+        ActionSystem.AttachPerformer<PlayCardGA>(PlayCardPerformer);
+        ActionSystem.AttachPerformer<DiscardPlayedCardGA>(DiscardPlayedCardPerformer);
         ActionSystem.SubscribeReaction<EnemyTurnGA>(EnemyTurnPreReaction, ReactionTiming.PRE);
         ActionSystem.SubscribeReaction<EnemyTurnGA>(EnemyTurnPostReaction, ReactionTiming.POST);
     }
@@ -24,6 +28,8 @@ public class CardSystem : Singleton<CardSystem>
     {
         ActionSystem.DetachPerformer<DrawCardsGA>();
         ActionSystem.DetachPerformer<DiscardAllCardsGA>();
+        ActionSystem.DetachPerformer<PlayCardGA>();
+        ActionSystem.DetachPerformer<DiscardPlayedCardGA>();
         ActionSystem.UnsubscribeReaction<EnemyTurnGA>(EnemyTurnPreReaction, ReactionTiming.PRE);
         ActionSystem.UnsubscribeReaction<EnemyTurnGA>(EnemyTurnPostReaction, ReactionTiming.POST);
     }
@@ -71,6 +77,35 @@ public class CardSystem : Singleton<CardSystem>
         
         hand.Clear();
     }
+
+    private IEnumerator PlayCardPerformer(PlayCardGA playCardGA)
+    {
+        hand.Remove(playCardGA.Card);
+        var cardView = handView.RemoveCard(playCardGA.Card);
+        cardView.transform.DOKill();
+        cardView.transform.DOScale(playedCardPoint.localScale, 0.15f);
+        var tween = cardView.transform.DOMove(playedCardPoint.position, 0.15f);
+        yield return tween.WaitForCompletion();
+
+        SpendManaGA spendManaGA = new(playCardGA.Card.Mana);
+        ActionSystem.Instance.AddReaction(spendManaGA);
+
+        foreach (var effect in playCardGA.Card.Effects)
+            ActionSystem.Instance.AddReaction(new PerformEffectGA(effect));
+
+        discardPile.Add(playCardGA.Card);
+        ActionSystem.Instance.AddReaction(new DiscardPlayedCardGA(cardView));
+    }
+
+    private IEnumerator DiscardPlayedCardPerformer(DiscardPlayedCardGA discardPlayedCardGA)
+    {
+        var cardView = discardPlayedCardGA.CardView;
+        cardView.transform.DOKill();
+        cardView.transform.DOScale(Vector3.zero, 0.15f);
+        Tween tween = cardView.transform.DOMove(discardPilePoint.position, 0.15f);
+        yield return tween.WaitForCompletion();
+        Destroy(cardView.gameObject);
+    }
     
     // Reactions 
 
@@ -78,6 +113,7 @@ public class CardSystem : Singleton<CardSystem>
     {
         DiscardAllCardsGA discardAllCardsGA = new();
         ActionSystem.Instance.AddReaction(discardAllCardsGA);
+        // Perform Effects
     }
     
     private void EnemyTurnPostReaction(EnemyTurnGA enemyTurnGa)
@@ -98,6 +134,7 @@ public class CardSystem : Singleton<CardSystem>
 
     private IEnumerator DiscardCard(CardView cardView)
     {
+        cardView.transform.DOKill();
         cardView.transform.DOScale(Vector3.zero, 0.15f);
         Tween tween = cardView.transform.DOMove(discardPilePoint.position, 0.15f);
         yield return tween.WaitForCompletion();

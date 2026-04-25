@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24af5ea87c2f604459a1407aafe6a88d, type: 3}
+  m_Name: Bark
+  m_EditorClassIdentifier: Assembly-CSharp::CardData
+  <Description>k__BackingField: Draw 1 card and apply 1 Stress to all enemies.
+  <Mana>k__BackingField: 1
+  <Image>k__BackingField: {fileID: 21300000, guid: d1e0a30a90febe44bb37fb16bb5939b2, type: 3}
+  <Effects>k__BackingField:
+  - rid: 3710960007413497932
+  - rid: 3710960059484733516
+  references:
+    version: 2
+    RefIds:
+    - rid: 3710960007413497932
+      type: {class: DrawCardsEffect, ns: , asm: Assembly-CSharp}
+      data:
+        amount: 1
+    - rid: 3710960059484733516
+      type: {class: DealDamageEffect, ns: , asm: Assembly-CSharp}
+      data:
+        damageAmount: 10
