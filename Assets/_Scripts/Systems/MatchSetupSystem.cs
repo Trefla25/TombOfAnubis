@@ -4,6 +4,7 @@ using UnityEngine;
 public class MatchSetupSystem : MonoBehaviour
 {
     [SerializeField] private DogsData dogsData;
+    [SerializeField] private PerkData perkData;
 
     [SerializeField] private List<EnemyData> enemyDatas;
 
@@ -12,6 +13,7 @@ public class MatchSetupSystem : MonoBehaviour
         DogSystem.Instance.Setup(dogsData);
         EnemySystem.Instance.SetUp(enemyDatas);
         CardSystem.Instance.Setup(dogsData.Deck);
+        PerkSystem.Instance.AddPerk(new Perk(perkData));
         RefillManaGA refillManaGA = new();
         ActionSystem.Instance.Perform(refillManaGA, () =>
         {

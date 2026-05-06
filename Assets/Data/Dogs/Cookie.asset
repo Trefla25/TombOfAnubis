@@ -16,8 +16,6 @@ MonoBehaviour:
   <Health>k__BackingField: 20
   <Deck>k__BackingField:
   - {fileID: 11400000, guid: a97bf83cfc7dc084ea64b946e8d702bb, type: 2}
-  - {fileID: 11400000, guid: a97bf83cfc7dc084ea64b946e8d702bb, type: 2}
-  - {fileID: 11400000, guid: 7a88574cc52c8dd4192a737f3af6fe8b, type: 2}
-  - {fileID: 11400000, guid: 7a88574cc52c8dd4192a737f3af6fe8b, type: 2}
+  - {fileID: 11400000, guid: c2037c096f2700046a0f45c29272a2e3, type: 2}
   - {fileID: 11400000, guid: 195920606888a2d42a1c5df34c1e9381, type: 2}
-  - {fileID: 11400000, guid: 195920606888a2d42a1c5df34c1e9381, type: 2}
+  - {fileID: 11400000, guid: 7a88574cc52c8dd4192a737f3af6fe8b, type: 2}

@@ -9,4 +9,20 @@ public class DogSystem : Singleton<DogSystem>
     {
         DogsView.SetUp(dogsData);
     }
+
+    private void OnEnable()
+    {                                                                                                                                                               
+        ActionSystem.SubscribeReaction<EnemyTurnGA>(EnemyTurnPostReaction, ReactionTiming.POST);
+    }
+
+    private void OnDisable()
+    {
+        ActionSystem.UnsubscribeReaction<EnemyTurnGA>(EnemyTurnPostReaction, ReactionTiming.POST);
+    }
+
+    private void EnemyTurnPostReaction(EnemyTurnGA enemyTurnGA)
+    {
+        if (DogsView.CurrentArmor > 0)
+            DogsView.LoseArmor(DogsView.CurrentArmor);
+    }
 }

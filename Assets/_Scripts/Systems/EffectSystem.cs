@@ -15,7 +15,7 @@ public class EffectSystem : MonoBehaviour
     // Performers
     private IEnumerator PerformEffectPerformer(PerformEffectGA performEffectGA)
     {
-        var effectAction = performEffectGA.Effect.GetGameAction();
+        var effectAction = performEffectGA.Effect.GetGameAction(performEffectGA.Targets, DogSystem.Instance.DogsView);
         ActionSystem.Instance.AddReaction(effectAction);
         yield return null;
     }

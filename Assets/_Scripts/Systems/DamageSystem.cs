@@ -18,8 +18,9 @@ public class DamageSystem : MonoBehaviour
     {
         foreach(var target in dealDamageGA.Targets)
         {
+            Vector3 vfxPosition = target.SpritePosition;
             target.Damage(dealDamageGA.Amount);
-            Instantiate(damageVFX, target.transform.position, Quaternion.identity);
+            Instantiate(damageVFX, vfxPosition, Quaternion.identity);
             yield return new WaitForSeconds(0.15f);
             if(target.CurrentHealth <= 0)
             {

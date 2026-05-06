@@ -51,7 +51,7 @@ public class EnemySystem : Singleton<EnemySystem>
         var attacker = attackDogGA.Attacker;
         var tween = attacker.transform.DOMoveX(attacker.transform.position.x - 1f, 0.15f);
         yield return tween.WaitForCompletion();
-        DealDamageGA dealDamageGA = new(attackDogGA.Damage, new() { DogSystem.Instance.DogsView });
+        DealDamageGA dealDamageGA = new(attackDogGA.Damage, new() { DogSystem.Instance.DogsView }, attackDogGA.Caster);
         ActionSystem.Instance.AddReaction(dealDamageGA);
         var returnTween = attacker.transform.DOMoveX(attacker.transform.position.x + 1f, 0.25f);
         yield return returnTween.WaitForCompletion();

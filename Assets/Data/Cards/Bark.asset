@@ -15,17 +15,33 @@ MonoBehaviour:
   <Description>k__BackingField: Draw 1 card and apply 1 Stress to all enemies.
   <Mana>k__BackingField: 1
   <Image>k__BackingField: {fileID: 21300000, guid: d1e0a30a90febe44bb37fb16bb5939b2, type: 3}
-  <Effects>k__BackingField:
-  - rid: 3710960007413497932
-  - rid: 3710960059484733516
+  <ManualTargetEffect>k__BackingField:
+    rid: -2
+  <OtherEffects>k__BackingField:
+  - <TargetMode>k__BackingField:
+      rid: 335070774299721822
+    <Effect>k__BackingField:
+      rid: 335070774299721823
+  - <TargetMode>k__BackingField:
+      rid: 335070774299721824
+    <Effect>k__BackingField:
+      rid: 335070774299721825
   references:
     version: 2
     RefIds:
-    - rid: 3710960007413497932
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 335070774299721822
+      type: {class: AllEnemiesTargetMode, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 335070774299721823
+      type: {class: DealDamageEffect, ns: , asm: Assembly-CSharp}
+      data:
+        damageAmount: 3
+    - rid: 335070774299721824
+      type: {class: NoTM, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 335070774299721825
       type: {class: DrawCardsEffect, ns: , asm: Assembly-CSharp}
       data:
         amount: 1
-    - rid: 3710960059484733516
-      type: {class: DealDamageEffect, ns: , asm: Assembly-CSharp}
-      data:
-        damageAmount: 10
