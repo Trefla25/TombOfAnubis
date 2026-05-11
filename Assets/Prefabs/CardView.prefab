@@ -417,6 +417,7 @@ MonoBehaviour:
   dropLayer:
     serializedVersion: 2
     m_Bits: 64
+  background: {fileID: 4665614656790618305}
 --- !u!210 &1908281523929960099
 SortingGroup:
   m_ObjectHideFlags: 0
@@ -625,7 +626,7 @@ SpriteRenderer:
   m_SortingOrder: -1
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 58bef13b619f8164da225841a66e4440, type: 3}
-  m_Color: {r: 1, g: 0.9411765, b: 0.9607844, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

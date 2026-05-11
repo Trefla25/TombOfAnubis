@@ -45,16 +45,13 @@ public class FightingView : MonoBehaviour
 
     public void Damage(int damageAmount)
     {
-        var incomingDamage = damageAmount;
-
-        CurrentArmor = Mathf.Max(0, CurrentArmor - incomingDamage);
+        int absorbed = Mathf.Min(CurrentArmor, damageAmount);
+        CurrentArmor -= absorbed;
         armorViewUI?.UpdateArmorUI(CurrentArmor);
-        incomingDamage = Mathf.Max(0, incomingDamage - CurrentArmor);
-        CurrentHealth -= incomingDamage;
-        if(CurrentHealth < 0)
-        {
-            CurrentHealth = 0;
-        }
+
+        int healthDamage = damageAmount - absorbed;
+        CurrentHealth = Mathf.Max(0, CurrentHealth - healthDamage);
+
         transform.DOShakePosition(0.2f, 0.5f);
         UpdateHealthText();
     }

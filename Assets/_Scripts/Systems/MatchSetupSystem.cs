@@ -3,22 +3,20 @@ using UnityEngine;
 
 public class MatchSetupSystem : MonoBehaviour
 {
-    [SerializeField] private DogsData dogsData;
+    [SerializeField] private PartyData party;
     [SerializeField] private PerkData perkData;
-
     [SerializeField] private List<EnemyData> enemyDatas;
 
     private void Start()
     {
-        DogSystem.Instance.Setup(dogsData);
+        DogSystem.Instance.Setup(party);
         EnemySystem.Instance.SetUp(enemyDatas);
-        CardSystem.Instance.Setup(dogsData.Deck);
-        PerkSystem.Instance.AddPerk(new Perk(perkData));
-        RefillManaGA refillManaGA = new();
-        ActionSystem.Instance.Perform(refillManaGA, () =>
+        CardSystem.Instance.Setup(DogSystem.Instance.Dogs);
+        if (perkData != null) PerkSystem.Instance.AddPerk(new Perk(perkData));
+
+        ActionSystem.Instance.Perform(new RefillManaGA(), () =>
         {
-            DrawCardsGA drawCardsGA = new(3);
-            ActionSystem.Instance.Perform(drawCardsGA);
+            ActionSystem.Instance.Perform(new DrawCardsGA(5));
         });
     }
 }

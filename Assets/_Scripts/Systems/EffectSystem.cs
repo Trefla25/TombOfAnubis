@@ -3,19 +3,14 @@ using UnityEngine;
 
 public class EffectSystem : MonoBehaviour
 {
-    void OnEnable()
-    {
-        ActionSystem.AttachPerformer<PerformEffectGA>(PerformEffectPerformer);
-    }
+    void OnEnable() =>
+ActionSystem.AttachPerformer<PerformEffectGA>(PerformEffectPerformer);
+    void OnDisable() => ActionSystem.DetachPerformer<PerformEffectGA>();
 
-    void OnDisable()
-    {
-        ActionSystem.DetachPerformer<PerformEffectGA>();
-    }
-    // Performers
     private IEnumerator PerformEffectPerformer(PerformEffectGA performEffectGA)
     {
-        var effectAction = performEffectGA.Effect.GetGameAction(performEffectGA.Targets, DogSystem.Instance.DogsView);
+        FightingView caster = performEffectGA.Caster ?? DogSystem.Instance.GetAnyAliveDog();
+        var effectAction = performEffectGA.Effect.GetGameAction(performEffectGA.Targets, caster);
         ActionSystem.Instance.AddReaction(effectAction);
         yield return null;
     }

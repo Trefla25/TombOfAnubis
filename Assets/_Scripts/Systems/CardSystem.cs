@@ -19,9 +19,8 @@ public class CardSystem : Singleton<CardSystem>
         ActionSystem.AttachPerformer<DrawCardsGA>(DrawCardsPerformer);
         ActionSystem.AttachPerformer<DiscardAllCardsGA>(DiscardAllCardsPerformer);
         ActionSystem.AttachPerformer<PlayCardGA>(PlayCardPerformer);
+
         ActionSystem.AttachPerformer<DiscardPlayedCardGA>(DiscardPlayedCardPerformer);
-        ActionSystem.SubscribeReaction<EnemyTurnGA>(EnemyTurnPreReaction, ReactionTiming.PRE);
-        ActionSystem.SubscribeReaction<EnemyTurnGA>(EnemyTurnPostReaction, ReactionTiming.POST);
     }
 
     private void OnDisable()
@@ -30,50 +29,38 @@ public class CardSystem : Singleton<CardSystem>
         ActionSystem.DetachPerformer<DiscardAllCardsGA>();
         ActionSystem.DetachPerformer<PlayCardGA>();
         ActionSystem.DetachPerformer<DiscardPlayedCardGA>();
-        ActionSystem.UnsubscribeReaction<EnemyTurnGA>(EnemyTurnPreReaction, ReactionTiming.PRE);
-        ActionSystem.UnsubscribeReaction<EnemyTurnGA>(EnemyTurnPostReaction, ReactionTiming.POST);
     }
-    
-    // Publics
-    public void Setup(List<CardData> deckData)
+
+    public void Setup(IEnumerable<DogView> dogs)
     {
-        foreach (var cardData in deckData)
+        foreach (var dog in dogs)
         {
-            var card = new Card(cardData);
-            drawPile.Add(card);
+            foreach (var cardData in dog.Data.StartingDeck)
+            {
+                drawPile.Add(new Card(cardData, dog));
+            }
         }
     }
-    
-    // Performers
 
     private IEnumerator DrawCardsPerformer(DrawCardsGA drawCardsGa)
     {
         int actualAmount = Mathf.Min(drawCardsGa.Amount, drawPile.Count);
         int nowDrawnAmount = drawCardsGa.Amount - actualAmount;
-
-        for (var i = 0; i < actualAmount; i++)
-        {
-            yield return DrawCard();
-        }
-
+        for (var i = 0; i < actualAmount; i++) yield return DrawCard();
         if (nowDrawnAmount > 0)
         {
             RefillDeck();
-            for (int i = 0; i < nowDrawnAmount; i++)
-            {
-                yield return DrawCard();
-            }
+            for (int i = 0; i < nowDrawnAmount; i++) yield return DrawCard();
         }
     }
 
-    private IEnumerator DiscardAllCardsPerformer(DiscardAllCardsGA drawCardGA)
+    private IEnumerator DiscardAllCardsPerformer(DiscardAllCardsGA _)
     {
         foreach (var card in hand)
         {
             var cardView = handView.RemoveCard(card);
             yield return DiscardCard(cardView);
         }
-        
         hand.Clear();
     }
 
@@ -86,21 +73,25 @@ public class CardSystem : Singleton<CardSystem>
         var tween = cardView.transform.DOMove(playedCardPoint.position, 0.15f);
         yield return tween.WaitForCompletion();
 
-        SpendManaGA spendManaGA = new(playCardGA.Card.Mana);
-        ActionSystem.Instance.AddReaction(spendManaGA);
+        var owner = playCardGA.Card.OwnerDog;
+        ActionSystem.Instance.AddReaction(new SpendManaGA(playCardGA.Card.Mana, owner));
 
-        if(playCardGA.Card.ManualTargetEffect != null)
+        if (playCardGA.Card.ManualTargetEffects.Count > 0)
         {
-            PerformEffectGA performEffectGA = new(playCardGA.Card.ManualTargetEffect, new() { playCardGA.ManualTarget });
-            ActionSystem.Instance.AddReaction(performEffectGA);
+            foreach (var manualTargetEffect in playCardGA.Card.ManualTargetEffects)
+            {
+                var ga = new PerformEffectGA(manualTargetEffect, new() { playCardGA.ManualTarget }, owner);
+                ActionSystem.Instance.AddReaction(ga);
+            }
         }
 
         foreach (var effectWrapper in playCardGA.Card.OtherEffects)
         {
             var targets = effectWrapper.TargetMode.GetTargets();
-            var performEffectGA = new PerformEffectGA(effectWrapper.Effect, targets);
-            ActionSystem.Instance.AddReaction(performEffectGA);
+            var ga = new PerformEffectGA(effectWrapper.Effect, targets, owner);
+            ActionSystem.Instance.AddReaction(ga);
         }
+
         discardPile.Add(playCardGA.Card);
         ActionSystem.Instance.AddReaction(new DiscardPlayedCardGA(cardView));
     }
@@ -114,30 +105,13 @@ public class CardSystem : Singleton<CardSystem>
         yield return tween.WaitForCompletion();
         Destroy(cardView.gameObject);
     }
-    
-    // Reactions 
-
-    private void EnemyTurnPreReaction(EnemyTurnGA enemyTurnGa)
-    {
-        DiscardAllCardsGA discardAllCardsGA = new();
-        ActionSystem.Instance.AddReaction(discardAllCardsGA);
-        // Perform Effects
-    }
-    
-    private void EnemyTurnPostReaction(EnemyTurnGA enemyTurnGa)
-    {
-        DrawCardsGA drawCardsGA = new(3);
-        ActionSystem.Instance.AddReaction(drawCardsGA);
-    }
-    
-    //  Helpers
 
     private IEnumerator DrawCard()
     {
         var card = drawPile.Draw();
         hand.Add(card);
         CardView cardView = CardViewCreator.Instance.CreateCardView(card, drawPilePoint.position, drawPilePoint.rotation);
-        yield return handView.AddCard((cardView));
+        yield return handView.AddCard(cardView);
     }
 
     private IEnumerator DiscardCard(CardView cardView)

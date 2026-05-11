@@ -1,15 +1,11 @@
 using System.Collections.Generic;
-using UnityEngine;
+using System.Linq;
 
 [System.Serializable]
 public class DogTM : TargetMode
 {
     public override List<FightingView> GetTargets()
     {
-        List<FightingView> targets = new()
-        {
-            DogSystem.Instance.DogsView
-        };
-        return targets;
+        return DogSystem.Instance.AliveDogs.Cast<FightingView>().ToList();
     }
 }

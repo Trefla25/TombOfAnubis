@@ -12,11 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24af5ea87c2f604459a1407aafe6a88d, type: 3}
   m_Name: Bark
   m_EditorClassIdentifier: Assembly-CSharp::CardData
-  <Description>k__BackingField: Draw 1 card and apply 1 Stress to all enemies.
+  <Description>k__BackingField: Deal 3 damage to all enemies. Draw 1 card.
   <Mana>k__BackingField: 1
   <Image>k__BackingField: {fileID: 21300000, guid: d1e0a30a90febe44bb37fb16bb5939b2, type: 3}
-  <ManualTargetEffect>k__BackingField:
-    rid: -2
+  <ManualTargetEffects>k__BackingField: []
   <OtherEffects>k__BackingField:
   - <TargetMode>k__BackingField:
       rid: 335070774299721822
@@ -29,8 +28,6 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
     - rid: 335070774299721822
       type: {class: AllEnemiesTargetMode, ns: , asm: Assembly-CSharp}
       data: 

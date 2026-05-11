@@ -12,11 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24af5ea87c2f604459a1407aafe6a88d, type: 3}
   m_Name: Coat Up
   m_EditorClassIdentifier: Assembly-CSharp::CardData
-  <Description>k__BackingField: Gain 2 block.
+  <Description>k__BackingField: Gain 4 block.
   <Mana>k__BackingField: 1
   <Image>k__BackingField: {fileID: 21300000, guid: 7a1f44e5615c82a4bbae0298fb376f33, type: 3}
-  <ManualTargetEffect>k__BackingField:
-    rid: -2
+  <ManualTargetEffects>k__BackingField: []
   <OtherEffects>k__BackingField:
   - <TargetMode>k__BackingField:
       rid: 335070814058315876
@@ -25,12 +24,10 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
     - rid: 335070814058315876
       type: {class: DogTM, ns: , asm: Assembly-CSharp}
       data: 
     - rid: 335070826431250512
       type: {class: GainArmorEffect, ns: , asm: Assembly-CSharp}
       data:
-        armorAmount: 10
+        armorAmount: 3

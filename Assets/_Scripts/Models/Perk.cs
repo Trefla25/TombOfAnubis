@@ -1,12 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Perk 
+public class Perk
 {
     public Sprite Image => data.Image;
     private readonly PerkData data;
     private readonly PerkCondition condition;
     private readonly AutoTargetEffect effect;
+
     public Perk(PerkData perkData)
     {
         data = perkData;
@@ -14,32 +15,20 @@ public class Perk
         effect = data.AutoTargetEffect;
     }
 
-    public void OnAdd()
-    {
-        condition.SubscribeCondition(Reaction);
-    }
-
-    public void OnRemove()
-    {
-        condition.UnsubscribeCondition(Reaction);
-    }
+    public void OnAdd() => condition.SubscribeCondition(Reaction);
+    public void OnRemove() => condition.UnsubscribeCondition(Reaction);
 
     private void Reaction(GameAction gameAction)
     {
-        if (condition.SubConditionIsMet(gameAction))
-        {
-            List<FightingView> targets = new();
-            if (data.UseActionCasterAsTarget && gameAction is IHaveCaster haveCaster)
-            {
-                targets.Add(haveCaster.Caster);
-            }
-            if(data.UseAutoTarget)
-            {
-                targets.AddRange(effect.TargetMode.GetTargets());
-            }
+        if (!condition.SubConditionIsMet(gameAction)) return;
 
-            var perkEffectAciton = effect.Effect.GetGameAction(targets, DogSystem.Instance.DogsView);
-            ActionSystem.Instance.AddReaction(perkEffectAciton);
-        }
+        List<FightingView> targets = new();
+        if (data.UseActionCasterAsTarget && gameAction is IHaveCaster haveCaster)
+            targets.Add(haveCaster.Caster);
+        if (data.UseAutoTarget)
+            targets.AddRange(effect.TargetMode.GetTargets());
+
+        var caster = DogSystem.Instance.GetAnyAliveDog();
+        ActionSystem.Instance.AddReaction(effect.Effect.GetGameAction(targets, caster));
     }
 }

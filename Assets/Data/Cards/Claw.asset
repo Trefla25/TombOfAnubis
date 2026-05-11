@@ -15,14 +15,19 @@ MonoBehaviour:
   <Description>k__BackingField: Deal 3 damage. Apply 5 Bleed.
   <Mana>k__BackingField: 2
   <Image>k__BackingField: {fileID: 21300000, guid: d31dc169816e8fd44be144e6dc4a9e26, type: 3}
-  <ManualTargetEffect>k__BackingField:
-    rid: 335070826431250514
+  <ManualTargetEffects>k__BackingField:
+  - rid: 335070863159197787
+  - rid: 335070863159197788
   <OtherEffects>k__BackingField: []
   references:
     version: 2
     RefIds:
-    - rid: 335070826431250514
+    - rid: 335070863159197787
       type: {class: AddStatusEffectEffect, ns: , asm: Assembly-CSharp}
       data:
-        statusEffectType: 0
+        statusEffectType: 1
         stackCount: 5
+    - rid: 335070863159197788
+      type: {class: DealDamageEffect, ns: , asm: Assembly-CSharp}
+      data:
+        damageAmount: 3
