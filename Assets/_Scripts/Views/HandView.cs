@@ -35,6 +35,32 @@ public class HandView : Singleton<HandView>
     private CardView hoveredCard;
     private CardView draggedCard;
 
+    private void OnEnable()
+    {
+        ActionSystem.SubscribeReaction<SpendManaGA>(OnSpendManaPost, ReactionTiming.POST);
+        ActionSystem.SubscribeReaction<RefillManaGA>(OnRefillManaPost, ReactionTiming.POST);
+        ActionSystem.SubscribeReaction<DogDiedGA>(OnDogDiedPost, ReactionTiming.POST);
+    }
+
+    private void OnDisable()
+    {
+        ActionSystem.UnsubscribeReaction<SpendManaGA>(OnSpendManaPost, ReactionTiming.POST);
+        ActionSystem.UnsubscribeReaction<RefillManaGA>(OnRefillManaPost, ReactionTiming.POST);
+        ActionSystem.UnsubscribeReaction<DogDiedGA>(OnDogDiedPost, ReactionTiming.POST);
+    }
+
+    private void OnSpendManaPost(SpendManaGA _)   => RefreshPlayability();
+    private void OnRefillManaPost(RefillManaGA _) => RefreshPlayability();
+    private void OnDogDiedPost(DogDiedGA _)       => RefreshPlayability();
+
+    public void RefreshPlayability()
+    {
+        foreach (var card in cards)
+        {
+            if (card != null) card.RefreshPlayability();
+        }
+    }
+
     private void Update()
     {
         if (draggedCard != null && allowCardRepositioning)
@@ -44,6 +70,7 @@ public class HandView : Singleton<HandView>
     public IEnumerator AddCard(CardView cardView)
     {
         cards.Add(cardView);
+        cardView.RefreshPlayability();
         yield return UpdateCardPosition(repositionDuration);
     }
 

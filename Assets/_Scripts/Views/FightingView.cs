@@ -12,6 +12,7 @@ public class FightingView : MonoBehaviour
     [SerializeField] private StatusEffectsUI statusEffectsUI;
     [SerializeField] private ArmorViewUI armorViewUI;
     public Vector3 SpritePosition => spriteRenderer.bounds.center;
+    protected SpriteRenderer SpriteRenderer => spriteRenderer;
     public int MaxHealth { get; private set; }
     public int CurrentHealth { get; private set; }
     public int CurrentArmor { get; private set; }

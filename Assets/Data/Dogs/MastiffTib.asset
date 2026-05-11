@@ -17,7 +17,7 @@ MonoBehaviour:
   <Class>k__BackingField: 0
   <Image>k__BackingField: {fileID: 21300000, guid: b6bd6fad29a3a7c4ea9c8cf445271a2f, type: 3}
   <TintColor>k__BackingField: {r: 0.627451, g: 0.1254902, b: 0.9411765, a: 1}
-  <Health>k__BackingField: 30
+  <Health>k__BackingField: 3
   <ManaPerTurn>k__BackingField: 2
   <StartingDeck>k__BackingField:
   - {fileID: 11400000, guid: 7a88574cc52c8dd4192a737f3af6fe8b, type: 2}
