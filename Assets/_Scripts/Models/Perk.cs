@@ -25,10 +25,11 @@ public class Perk
         List<FightingView> targets = new();
         if (data.UseActionCasterAsTarget && gameAction is IHaveCaster haveCaster)
             targets.Add(haveCaster.Caster);
-        if (data.UseAutoTarget)
-            targets.AddRange(effect.TargetMode.GetTargets());
 
         var caster = DogSystem.Instance.GetAnyAliveDog();
+        
+        if (data.UseAutoTarget)
+            targets.AddRange(effect.TargetMode.GetTargets(caster));
         ActionSystem.Instance.AddReaction(effect.Effect.GetGameAction(targets, caster));
     }
 }

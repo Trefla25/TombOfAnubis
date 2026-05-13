@@ -87,7 +87,7 @@ public class CardSystem : Singleton<CardSystem>
 
         foreach (var effectWrapper in playCardGA.Card.OtherEffects)
         {
-            var targets = effectWrapper.TargetMode.GetTargets();
+            var targets = effectWrapper.TargetMode.GetTargets(owner);
             var ga = new PerformEffectGA(effectWrapper.Effect, targets, owner);
             ActionSystem.Instance.AddReaction(ga);
         }

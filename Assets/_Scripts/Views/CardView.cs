@@ -128,4 +128,9 @@ public class CardView : MonoBehaviour
             Interactions.Instance.PlayerIsDragging = false;
         }
     }
+
+    private void OnDestroy()
+    {
+        transform.DOKill();
+    }
 }

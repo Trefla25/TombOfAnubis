@@ -58,4 +58,10 @@ public class DogView : FightingView
     {
         if (manaText != null) manaText.text = CurrentMana.ToString();
     }
+
+    private void OnDestroy()
+    {
+        transform.DOKill();
+        if (SpriteRenderer != null) SpriteRenderer.DOKill();
+    }
 }

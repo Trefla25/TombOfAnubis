@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -38,5 +39,16 @@ public class EnemyView : FightingView
             actionImage.sprite = move.MoveImage;
             actionImage.color = Color.white;
         }
+    }
+
+    public void SetIntentVisible(bool visible)
+    {
+        if (attackText != null) attackText.enabled = visible && CurrentMove.Type == MoveType.Attack;
+        if (actionImage != null) actionImage.enabled = visible;
+    }
+
+    private void OnDestroy()
+    {
+        transform.DOKill();
     }
 }

@@ -18,16 +18,16 @@ MonoBehaviour:
   <ManualTargetEffects>k__BackingField: []
   <OtherEffects>k__BackingField:
   - <TargetMode>k__BackingField:
-      rid: 335070814058315876
+      rid: 335070963455230031
     <Effect>k__BackingField:
       rid: 335070826431250512
   references:
     version: 2
     RefIds:
-    - rid: 335070814058315876
-      type: {class: DogTM, ns: , asm: Assembly-CSharp}
-      data: 
     - rid: 335070826431250512
       type: {class: GainArmorEffect, ns: , asm: Assembly-CSharp}
       data:
         armorAmount: 3
+    - rid: 335070963455230031
+      type: {class: OwnerDogTM, ns: , asm: Assembly-CSharp}
+      data: 

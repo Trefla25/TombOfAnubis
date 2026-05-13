@@ -1,10 +1,11 @@
 using System.Collections.Generic;
+using System.Linq;
 
 [System.Serializable]
-public class AllEnemiesTargetMode : TargetMode
+public class AllAliveDogsTM : TargetMode
 {
     public override List<FightingView> GetTargets(FightingView caster)
     {
-        return new(EnemySystem.Instance.Enemies);
+        return DogSystem.Instance.AliveDogs.Cast<FightingView>().ToList();
     }
 }

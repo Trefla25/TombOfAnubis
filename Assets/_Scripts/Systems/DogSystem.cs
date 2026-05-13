@@ -11,19 +11,32 @@ public class DogSystem : Singleton<DogSystem>
     public IEnumerable<DogView> AliveDogs => dogBoardView.DogViews.Where(d => d.IsAlive);
     public int AliveCount => AliveDogs.Count();
 
-    public void Setup(PartyData party)
-    {
-        if (party == null || party.Dogs == null || party.Dogs.Count == 0)
-        {
-            Debug.LogError("DogSystem.Setup called with empty PartyData");
-            return;
-        }
-        for (int i = 0; i < party.Dogs.Count; i++)
-        {
-            var (row, col) = DefaultSlotForIndex(i);
-            dogBoardView.AddDog(party.Dogs[i], row, col);
-        }
-    }
+public void Setup(IEnumerable<DogData> dogs)
+  {
+      var list = dogs?.ToList();
+      if (list == null || list.Count == 0)
+      {
+          Debug.LogError("DogSystem.Setup called with empty dog list");
+          return;
+      }
+      for (int i = 0; i < list.Count; i++)
+      {
+          var (row, col) = DefaultSlotForIndex(i);
+          dogBoardView.AddDog(list[i], row, col);
+      }
+  }
+
+  public void Setup(IEnumerable<(DogData dog, DogRow row, DogColumn col)> assignments)
+  {
+      if (assignments == null) { Debug.LogError("DogSystem.Setup: null assignments"); return; }
+      foreach (var a in assignments)
+      {
+          if (a.dog == null) continue;
+          dogBoardView.AddDog(a.dog, a.row, a.col);
+      }
+  }
+
+  public void Setup(PartyData party) => Setup(party?.Dogs);
 
     public DogView GetRandomAliveDog()
     {
