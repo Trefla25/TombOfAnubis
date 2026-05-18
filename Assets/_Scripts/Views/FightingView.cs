@@ -18,14 +18,17 @@ public class FightingView : MonoBehaviour
     public int CurrentArmor { get; private set; }
     private Dictionary<StatusEffectType, int> statusEffects = new();
 
-    protected void SetUpBase(int health, Sprite image)
+    protected void SetUpBase(int maxHealth, int currentHealth, Sprite image)
     {
-        MaxHealth = CurrentHealth = health;
+        MaxHealth = maxHealth;
+        CurrentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
         CurrentArmor = 0;
         armorViewUI?.UpdateArmorUI(0);
         spriteRenderer.sprite = image;
         UpdateHealthText();
     }
+
+    protected void SetUpBase(int health, Sprite image) => SetUpBase(health, health, image);
 
     public void GainArmor(int amount)
     {

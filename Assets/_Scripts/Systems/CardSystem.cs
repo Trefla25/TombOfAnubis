@@ -22,7 +22,7 @@ public class CardSystem : Singleton<CardSystem>
 
         ActionSystem.AttachPerformer<DiscardPlayedCardGA>(DiscardPlayedCardPerformer);
     }
-
+ 
     private void OnDisable()
     {
         ActionSystem.DetachPerformer<DrawCardsGA>();
@@ -31,14 +31,12 @@ public class CardSystem : Singleton<CardSystem>
         ActionSystem.DetachPerformer<DiscardPlayedCardGA>();
     }
 
-    public void Setup(IEnumerable<DogView> dogs)
+    public void Setup(IEnumerable<(DogView dog, IReadOnlyList<CardData> deck)> dogDecks)
     {
-        foreach (var dog in dogs)
+        foreach (var (dog, deck) in dogDecks)
         {
-            foreach (var cardData in dog.Data.StartingDeck)
-            {
+            foreach (var cardData in deck)
                 drawPile.Add(new Card(cardData, dog));
-            }
         }
     }
 

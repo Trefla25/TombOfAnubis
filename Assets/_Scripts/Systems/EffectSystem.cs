@@ -3,8 +3,7 @@ using UnityEngine;
 
 public class EffectSystem : MonoBehaviour
 {
-    void OnEnable() =>
-ActionSystem.AttachPerformer<PerformEffectGA>(PerformEffectPerformer);
+    void OnEnable() => ActionSystem.AttachPerformer<PerformEffectGA>(PerformEffectPerformer);
     void OnDisable() => ActionSystem.DetachPerformer<PerformEffectGA>();
 
     private IEnumerator PerformEffectPerformer(PerformEffectGA performEffectGA)

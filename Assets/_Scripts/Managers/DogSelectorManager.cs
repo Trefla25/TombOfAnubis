@@ -11,6 +11,7 @@ public class DogSelectorManager : MonoBehaviour
     [SerializeField] private DogSelectorCardView cardPrefab;
     [SerializeField] private Button startRunButton;
     [SerializeField] private TMP_Text selectedCountText;
+    private const int PartySize = 4;
 
     private readonly List<DogData> selected = new();
     private readonly Dictionary<DogData, DogSelectorCardView> cardByDog = new();
@@ -47,7 +48,7 @@ public class DogSelectorManager : MonoBehaviour
         }
         else
         {
-            if (selected.Count >= PartySelection.PartySize) return;
+            if (selected.Count >= PartySize) return;
             selected.Add(dog);
             card.SetSelected(true);
         }
@@ -57,21 +58,21 @@ public class DogSelectorManager : MonoBehaviour
     private void UpdateUI()
     {
         if (selectedCountText != null)
-            selectedCountText.text = "Selected: " + selected.Count + "/" + PartySelection.PartySize;
+            selectedCountText.text = "Selected: " + selected.Count + "/" + PartySize;
         if (startRunButton != null)
-            startRunButton.interactable = selected.Count == PartySelection.PartySize;
+            startRunButton.interactable = selected.Count == PartySize;
     }
 
     public void StartRun()
     {
-        if (selected.Count != PartySelection.PartySize) return;
+        if (selected.Count != PartySize) return;
 
-        if (PartySelection.Instance == null)
+        if (RunController.Instance == null)
         {
-            Debug.LogError("DogSelectorManager.StartRun: PartySelection singleton not found. Did you boot through the Core scene?");
+            Debug.LogError("DogSelectorManager.StartRun: RunController singleton not found. Did you boot through the Core scene?");
             return;
         }
-        PartySelection.Instance.SetSelection(selected);
+        RunController.Instance.StartNewRun(selected);
 
         if (SceneController.Instance == null)
         {

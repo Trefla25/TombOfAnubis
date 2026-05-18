@@ -21,4 +21,10 @@ public class PerkSystem : Singleton<PerkSystem>
         perk.OnRemove();
     }
 
+    private void OnDestroy()
+    {
+        foreach (var perk in perks)
+            perk.OnRemove();
+        perks.Clear();
+    }
 }

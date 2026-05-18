@@ -14,11 +14,13 @@ public class MatchSetupSystem : MonoBehaviour
     private void OnEnable()
     {
         ActionSystem.SubscribeReaction<StartCombatGA>(OnStartCombatPost, ReactionTiming.POST);
+        ActionSystem.SubscribeReaction<CombatEndedGA>(OnCombatEnded, ReactionTiming.POST);
     }
 
     private void OnDisable()
     {
         ActionSystem.UnsubscribeReaction<StartCombatGA>(OnStartCombatPost, ReactionTiming.POST);
+        ActionSystem.UnsubscribeReaction<CombatEndedGA>(OnCombatEnded, ReactionTiming.POST);
     }
 
     private void Start()
@@ -46,8 +48,8 @@ public class MatchSetupSystem : MonoBehaviour
 
     private List<DogData> ResolveParty()
     {
-        if (PartySelection.Instance != null && PartySelection.Instance.HasSelection)
-            return PartySelection.Instance.SelectedDogs;
+        if (RunController.Instance != null && RunController.Instance.HasRun)
+            return RunController.Instance.CurrentRun.Dogs;
         return fallbackParty != null ? fallbackParty.Dogs.ToList() : null;
     }
 
@@ -55,7 +57,17 @@ public class MatchSetupSystem : MonoBehaviour
     {
         var assignments = PositioningSystem.Instance.GetAssignments().ToList();
         DogSystem.Instance.Setup(assignments);
-        CardSystem.Instance.Setup(DogSystem.Instance.Dogs);
+
+        var dogDecks = DogSystem.Instance.Dogs.Select(dogView =>
+        {
+            IReadOnlyList<CardData> deck =
+                (RunController.Instance != null && RunController.Instance.HasRun)
+                    ? RunController.Instance.CurrentRun.Decks[dogView.Data]
+                    : dogView.Data.StartingDeck;
+            return (dogView, deck);
+        });
+        CardSystem.Instance.Setup(dogDecks);
+
         if (perkData != null) PerkSystem.Instance.AddPerk(new Perk(perkData));
 
         SetEnemyIntentsVisible(true);
@@ -66,9 +78,20 @@ public class MatchSetupSystem : MonoBehaviour
     private void BeginCombatWithDefaultPositions()
     {
         DogSystem.Instance.Setup(partyDogs);
-        CardSystem.Instance.Setup(DogSystem.Instance.Dogs);
+
+        var dogDecks = DogSystem.Instance.Dogs.Select(dogView =>
+        {
+            IReadOnlyList<CardData> deck =
+                (RunController.Instance != null && RunController.Instance.HasRun)
+                    ? RunController.Instance.CurrentRun.Decks[dogView.Data]
+                    : dogView.Data.StartingDeck;
+            return (dogView, deck);
+        });
+        CardSystem.Instance.Setup(dogDecks);
+
         if (perkData != null) PerkSystem.Instance.AddPerk(new Perk(perkData));
         SetEnemyIntentsVisible(true);
+
         ActionSystem.Instance.Perform(new RefillManaGA(), () =>
         {
             ActionSystem.Instance.Perform(new DrawCardsGA(5));
@@ -82,5 +105,25 @@ public class MatchSetupSystem : MonoBehaviour
         {
             if (enemy != null) enemy.SetIntentVisible(visible);
         }
+    }
+
+    private void OnCombatEnded(CombatEndedGA _)
+    {
+        if (RunController.Instance == null || !RunController.Instance.HasRun) return;
+        if (DogSystem.Instance == null || DogSystem.Instance.AliveCount == 0) return;
+
+        var run = RunController.Instance.CurrentRun;
+        int reviveHp = RunController.Instance.Config != null
+            ? RunController.Instance.Config.RevivalHp
+            : 1;
+
+        foreach (var dogView in DogSystem.Instance.Dogs)
+        {
+            int hp = dogView.IsDead ? reviveHp : dogView.CurrentHealth;
+            run.CurrentHp[dogView.Data] = hp;
+        }
+
+        Debug.Log($"[MatchSetupSystem] Combat ended. HP writeback: " +
+            string.Join(", ", run.CurrentHp.Select(kv => $"{kv.Key.DisplayName}:{kv.Value}")));
     }
 }

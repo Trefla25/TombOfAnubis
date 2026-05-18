@@ -8,11 +8,11 @@ public class DogBoardView : MonoBehaviour
 
     public List<DogView> DogViews { get; private set; } = new();
 
-    public void AddDog(DogData data, DogRow row, DogColumn column)
+    public void AddDog(DogData data, DogRow row, DogColumn column, int startingHp)
     {
         int slotIndex = SlotIndex(row, column);
         Transform slot = slots[slotIndex];
-        var dogView = DogViewCreator.Instance.CreateDogView(data, row, column, slot.position, slot.rotation);
+        var dogView = DogViewCreator.Instance.CreateDogView(data, row, column, startingHp, slot.position, slot.rotation);
         dogView.transform.parent = slot;
         DogViews.Add(dogView);
     }

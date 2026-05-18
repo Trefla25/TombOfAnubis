@@ -68,8 +68,7 @@ public class EnemySystem : Singleton<EnemySystem>
         yield return returnTween.WaitForCompletion();
     }
 
-    private IEnumerator AdvanceEnemyMovesPerformer(AdvanceEnemyMovesGA
-advanceEnemyMovesGA)
+    private IEnumerator AdvanceEnemyMovesPerformer(AdvanceEnemyMovesGA advanceEnemyMovesGA)
     {
         foreach (var enemy in advanceEnemyMovesGA.Enemies)
         {
@@ -82,5 +81,9 @@ advanceEnemyMovesGA)
     private IEnumerator KillEnemyPerformer(KillEnemyGA killEnemyGA)
     {
         yield return enemyBoardView.RemoveEnemy(killEnemyGA.EnemyView);
+        if (Enemies.Count == 0 && DogSystem.Instance.AliveCount > 0)
+        {
+            ActionSystem.Instance.AddReaction(new CombatEndedGA());
+        }
     }
 }

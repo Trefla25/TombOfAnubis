@@ -11,32 +11,41 @@ public class DogSystem : Singleton<DogSystem>
     public IEnumerable<DogView> AliveDogs => dogBoardView.DogViews.Where(d => d.IsAlive);
     public int AliveCount => AliveDogs.Count();
 
-public void Setup(IEnumerable<DogData> dogs)
-  {
-      var list = dogs?.ToList();
-      if (list == null || list.Count == 0)
-      {
-          Debug.LogError("DogSystem.Setup called with empty dog list");
-          return;
-      }
-      for (int i = 0; i < list.Count; i++)
-      {
-          var (row, col) = DefaultSlotForIndex(i);
-          dogBoardView.AddDog(list[i], row, col);
-      }
-  }
+    public void Setup(IEnumerable<DogData> dogs)
+    {
+        var list = dogs?.ToList();
+        if (list == null || list.Count == 0)
+        {
+            Debug.LogError("DogSystem.Setup called with empty dog list");
+            return;
+        }
+        for (int i = 0; i < list.Count; i++)
+        {
+            var (row, col) = DefaultSlotForIndex(i);
+            dogBoardView.AddDog(list[i], row, col, ResolveStartingHp(list[i]));
+        }
+    }
 
-  public void Setup(IEnumerable<(DogData dog, DogRow row, DogColumn col)> assignments)
-  {
-      if (assignments == null) { Debug.LogError("DogSystem.Setup: null assignments"); return; }
-      foreach (var a in assignments)
-      {
-          if (a.dog == null) continue;
-          dogBoardView.AddDog(a.dog, a.row, a.col);
-      }
-  }
+    public void Setup(IEnumerable<(DogData dog, DogRow row, DogColumn col)> assignments)
+    {
+        if (assignments == null) { Debug.LogError("DogSystem.Setup: null assignments"); return; }
+        foreach (var a in assignments)
+        {
+            if (a.dog == null) continue;
+            dogBoardView.AddDog(a.dog, a.row, a.col, ResolveStartingHp(a.dog));
+        }
+    }
 
-  public void Setup(PartyData party) => Setup(party?.Dogs);
+    public void Setup(PartyData party) => Setup(party?.Dogs);
+
+    private static int ResolveStartingHp(DogData dog)
+    {
+        if (RunController.Instance != null
+            && RunController.Instance.HasRun
+            && RunController.Instance.CurrentRun.CurrentHp.TryGetValue(dog, out var hp))
+            return hp;
+        return dog.Health;
+    }
 
     public DogView GetRandomAliveDog()
     {

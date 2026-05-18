@@ -16,14 +16,14 @@ public class DogView : FightingView
 
     private static readonly Color DeadTint = new(0.35f, 0.35f, 0.35f, 0.8f);
 
-    public void SetUp(DogData data, DogRow row, DogColumn column)
+    public void SetUp(DogData data, DogRow row, DogColumn column, int startingHp)
     {
         Data = data;
         Row = row;
         Column = column;
         CurrentMana = data.ManaPerTurn;
         IsDead = false;
-        SetUpBase(data.Health, data.Image);
+        SetUpBase(data.Health, startingHp, data.Image);
         UpdateManaText();
     }
 

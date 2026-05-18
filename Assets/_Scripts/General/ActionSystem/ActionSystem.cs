@@ -121,4 +121,10 @@ public class ActionSystem : Singleton<ActionSystem>
         }
     }
     
+    public void Clear()
+    {
+        StopAllCoroutines();
+        reactions = null;
+        IsPerforming = false;
+    }
 }
